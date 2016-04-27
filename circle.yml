@@ -1,0 +1,24 @@
+machine:
+  php:
+    version: 5.6.5
+dependencies:
+  override:
+    - composer install --prefer-source --no-interaction --no-dev
+  pre:
+    - sudo apt-get update; sodu ap-get install php5-gd php5-mysql
+  post:
+    - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
+    - java -jar selenium-server-standalone-2.44.0.jar:
+        background: true
+    # install chromedriver
+    - wget https://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip
+    - unzip chromedriver_linux64.zip
+    # run chromedriver
+    - ./chromedriver:
+        background: true
+    - cp ~/citest2/MY-SITE /etc/apache2/sites-available
+    - a2ensite MY-SITE
+    - sudo service apache2 restart
+test:
+  override:
+    - phpunit SampleTest
